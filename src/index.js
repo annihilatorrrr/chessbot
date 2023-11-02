@@ -23,7 +23,7 @@ const { BOT_NAME, BOT_TOKEN } = process.env
 
 const bot = new Telegraf(BOT_TOKEN, {
   username: BOT_NAME,
-  telegram: { webhookReply: false }
+  telegram: { webhookReply: false },
 })
 const app = express()
 
