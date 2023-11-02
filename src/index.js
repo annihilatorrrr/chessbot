@@ -1,6 +1,7 @@
 require('dotenv').config()
 require('module-alias/register')
 
+const express = require('express')
 const knex = require('knex')
 const { default: Telegraf, session } = require('telegraf')
 
@@ -20,7 +21,11 @@ const knexConfig = require('@/../knexfile')
 
 const { BOT_NAME, BOT_TOKEN } = process.env
 
-const bot = new Telegraf(BOT_TOKEN, { username: BOT_NAME })
+const bot = new Telegraf(BOT_TOKEN, {
+  username: BOT_NAME,
+  telegram: { webhookReply: false }
+})
+const app = express()
 
 bot.context.db = knex(knexConfig)
 
@@ -63,4 +68,7 @@ bot.on('chosen_inline_result', async (ctx) => {
 
 bot.catch((err) => debug(err))
 
-bot.telegram.getUpdates(1, -1).then(() => bot.launch())
+app.use(bot.webhookCallback('/'))
+app.use(console.error)
+
+app.listen(6572)
